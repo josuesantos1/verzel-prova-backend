@@ -1,52 +1,59 @@
-from django.shortcuts import render
+from django.forms.models import model_to_dict
 from ninja import Router
 
 from .schemas import VehiclesSchema
+from .models import Vehicles
 
 class VehiclesViews():
     router = Router()
 
     @router.post('/')
-    def create(req, data: VehiclesSchema):
+    def create(request, data: VehiclesSchema):
         data = data.dict()
 
-        return {'result': 'vehicles'}
+        vehicles = Vehicles(**data)
+        vehicles.save()
+
+        return model_to_dict(vehicles)
 
     @router.get('/')
-    def viewAll(req):
-        return {'result': 'vehicles'}
+    def viewAll(request):
+        vehicles =  Vehicles.objects.all().order_by('price')
+        vehicles =  [{'id': i.id, 'name': i.name, 'descriptions': i.description, 'brand': i.brand, 'price': i.price, 'sold': i.sold} for i in vehicles]
+
+        return vehicles
 
     @router.get('/me')
-    def viewAllMe(req):
+    def viewAllMe(request):
         return {'result': 'vehicles'}
 
     @router.get('/')
-    def view(req):
+    def view(request):
         return {'result': 'vehicles'}
 
     @router.put('/')
-    def update(req):
+    def update(request):
         return {'result': 'vehicles'}
 
-    @router.get('/')
-    def delete(req):
+    @router.delete('/')
+    def delete(request):
         return {'result': 'vehicles'}
 
     # images 
     @router.post('/images')
-    def create_image(req):
+    def create_image(request):
         return {'result': 'vehicles'}
 
     @router.get('/images')
-    def view_image(req):
+    def view_image(request):
         return {'result': 'vehicles'}
 
     @router.put('/images')
-    def update(req):
+    def update(request):
         return {'result': 'vehicles'}
 
     @router.delete('/images')
-    def delete(req):
+    def delete(request):
         return {'result': 'vehicles'}
 
 
