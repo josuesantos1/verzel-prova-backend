@@ -24,10 +24,6 @@ class VehiclesViews():
 
         return vehicles
 
-    @router.get('/me')
-    def viewAllMe(request):
-        return {'result': 'vehicles'}
-
     @router.get('/')
     def view(request, id):
         vehicle = get_object_or_404(Vehicles, id=id)
@@ -43,8 +39,11 @@ class VehiclesViews():
         return model_to_dict(vehicle)
 
     @router.delete('/')
-    def delete(request):
-        return {'result': 'vehicles'}
+    def delete(request, id):
+        vehicle = get_object_or_404(Vehicles, id=id)
+        vehicle.delete()
+
+        return {'message': "deleted"}
 
     # images 
     @router.post('/images')
