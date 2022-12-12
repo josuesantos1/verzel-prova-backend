@@ -1,3 +1,5 @@
+import math
+
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
@@ -25,7 +27,7 @@ class VehiclesViews():
         page = paginator.get_page(page)
         vehicles =  [{'id': i.id, 'name': i.name, 'descriptions': i.description, 'brand': i.brand, 'price': i.price, 'sold': i.sold} for i in page]
 
-        return {'count': paginator.count,
+        return {'count': math.ceil(paginator.count/30),
                 'vehicles':  vehicles}
 
     @router.get('/')
