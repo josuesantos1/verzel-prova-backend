@@ -1,5 +1,6 @@
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 from ninja import Router
 
 from .schemas import VehiclesSchema
@@ -18,11 +19,14 @@ class VehiclesViews():
         return model_to_dict(vehicles)
 
     @router.get('/all')
-    def viewAll(request):
-        vehicles =  Vehicles.objects.all().order_by('price')
-        vehicles =  [{'id': i.id, 'name': i.name, 'descriptions': i.description, 'brand': i.brand, 'price': i.price, 'sold': i.sold} for i in vehicles]
+    def viewAll(request, page):
 
-        return vehicles
+        paginator =  Paginator(Vehicles.objects.all().order_by('price'), 30)
+        page = paginator.get_page(page)
+        vehicles =  [{'id': i.id, 'name': i.name, 'descriptions': i.description, 'brand': i.brand, 'price': i.price, 'sold': i.sold} for i in page]
+
+        return {'count': paginator.count,
+                'vehicles':  vehicles}
 
     @router.get('/')
     def view(request, id):
