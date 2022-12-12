@@ -19,7 +19,7 @@ class VehiclesViews():
         return model_to_dict(vehicles)
 
     @router.get('/all')
-    def viewAll(request, page):
+    def viewAll(request, page = 1):
 
         paginator =  Paginator(Vehicles.objects.all().order_by('price'), 30)
         page = paginator.get_page(page)
