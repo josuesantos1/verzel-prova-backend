@@ -1,4 +1,5 @@
 from django.forms.models import model_to_dict
+from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from .schemas import VehiclesSchema
@@ -27,9 +28,10 @@ class VehiclesViews():
     def viewAllMe(request):
         return {'result': 'vehicles'}
 
-    @router.get('/')
-    def view(request):
-        return {'result': 'vehicles'}
+    @router.get('/{id}')
+    def view(request, id):
+        vehicle = get_object_or_404(Vehicles, id=id)
+        return model_to_dict(vehicle)
 
     @router.put('/')
     def update(request):
