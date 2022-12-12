@@ -17,7 +17,7 @@ class VehiclesViews():
 
         return model_to_dict(vehicles)
 
-    @router.get('/')
+    @router.get('/all')
     def viewAll(request):
         vehicles =  Vehicles.objects.all().order_by('price')
         vehicles =  [{'id': i.id, 'name': i.name, 'descriptions': i.description, 'brand': i.brand, 'price': i.price, 'sold': i.sold} for i in vehicles]
@@ -28,14 +28,19 @@ class VehiclesViews():
     def viewAllMe(request):
         return {'result': 'vehicles'}
 
-    @router.get('/{id}')
+    @router.get('/')
     def view(request, id):
         vehicle = get_object_or_404(Vehicles, id=id)
         return model_to_dict(vehicle)
 
     @router.put('/')
-    def update(request):
-        return {'result': 'vehicles'}
+    def update(request, id, data: VehiclesSchema):
+        vehicle = get_object_or_404(Vehicles, id=id)
+        for attr, value in data.dict().items():
+            setattr(vehicle, attr, value)
+
+        vehicle.save()
+        return model_to_dict(vehicle)
 
     @router.delete('/')
     def delete(request):
